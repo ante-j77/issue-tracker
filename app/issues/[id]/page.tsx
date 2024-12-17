@@ -4,13 +4,13 @@ import { notFound } from "next/navigation";
 import EditIssueButton from "./EditIssueButton";
 import IssueDetails from "./IssueDetails";
 
-interface Props {
-  params: { id: string };
-}
-
-const IssuesDetailPage = async ({ params }: Props) => {
+const IssuesDetailPage = async ({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) => {
   const issue = await prisma.issue.findUnique({
-    where: { id: parseInt(params.id) },
+    where: { id: parseInt((await params).id) },
   });
 
   if (!issue) notFound();
@@ -18,7 +18,7 @@ const IssuesDetailPage = async ({ params }: Props) => {
   return (
     <Grid columns={{ initial: "1", md: "2" }} gap="5">
       <Box>
-        <IssueDetails issue={issue} /> 
+        <IssueDetails issue={issue} />
       </Box>
       <Box>
         <EditIssueButton issueId={issue.id} />
