@@ -4,7 +4,6 @@ import { IssueStatusBadge, Link } from "@/app/components";
 import NextLink from "next/link";
 import IssueActions from "./IssueActions";
 import { Issue, Status } from "@prisma/client";
-import { orderBy } from "lodash";
 import { ArrowUpIcon } from "@radix-ui/react-icons";
 
 const IssuesPage = async ({
@@ -18,12 +17,21 @@ const IssuesPage = async ({
     { lable: "Created", value: "createdAt", className: "hidden md:table-cell" },
   ];
 
-  const params = await searchParams;
+  const srcParams = await searchParams;
   const statuses = Object.values(Status);
-  const status = statuses.includes(params.status) ? params.status : undefined;
+  const status = statuses.includes(srcParams.status)
+    ? srcParams.status
+    : undefined;
+
+  const orderBy = columns
+    .map((column) => column.value)
+    .includes(srcParams.orderBy)
+    ? { [srcParams.orderBy]: "asc" }
+    : undefined;
 
   const issues = await prisma.issue.findMany({
     where: { status },
+    orderBy,
   });
 
   return (
@@ -36,12 +44,12 @@ const IssuesPage = async ({
               <Table.ColumnHeaderCell key={column.value}>
                 <NextLink
                   href={{
-                    query: { ...params, orderBy: column.value },
+                    query: { ...srcParams, orderBy: column.value },
                   }}
                 >
                   {column.lable}
                 </NextLink>
-                {column.value === params.orderBy && (
+                {column.value === srcParams.orderBy && (
                   <ArrowUpIcon className="inline" />
                 )}
               </Table.ColumnHeaderCell>
