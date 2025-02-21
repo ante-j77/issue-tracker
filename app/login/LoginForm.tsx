@@ -9,8 +9,9 @@ import Link from "next/link";
 import { FaGoogle } from "react-icons/fa";
 import { signIn } from "next-auth/react";
 import Spinner from "@/app/components/Spinner";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import InputField from "../components/InputField";
 
 type LoginFormData = z.infer<typeof loginSchema>;
 
@@ -30,27 +31,30 @@ const LoginForm = () => {
     resolver: zodResolver(loginSchema),
   });
 
-  const onSubmit = handleSubmit((data) => {
-    setSubmitting(true);
-    setError(null);
+  const onSubmit = useCallback(
+    handleSubmit((data) => {
+      setSubmitting(true);
+      setError(null);
 
-    signIn("credentials", {
-      email: data.email,
-      password: data.password,
-      redirect: false,
-    }).then((callback) => {
-      setSubmitting(false);
+      signIn("credentials", {
+        email: data.email,
+        password: data.password,
+        redirect: false,
+      }).then((callback) => {
+        setSubmitting(false);
 
-      if (callback?.ok) {
-        router.replace(callbackUrl);
-        router.refresh();
-      }
+        if (callback?.ok) {
+          router.replace(callbackUrl);
+          router.refresh();
+        }
 
-      if (callback?.error) {
-        throw new Error(callback.error);
-      }
-    });
-  });
+        if (callback?.error) {
+          throw new Error(callback.error);
+        }
+      });
+    }),
+    []
+  );
 
   return (
     <form onSubmit={onSubmit} className="border rounded-md py-6 px-6 w-[30rem]">
@@ -71,30 +75,20 @@ const LoginForm = () => {
           <FaGoogle /> Continue with Google
         </Button>
 
-        <Flex direction="column" className="w-[20rem]">
-          <label htmlFor="email">Email</label>
-          <input
-            {...register("email", { required: true })}
-            type="email"
-            id="email"
-            name="email"
-            className="border rounded-md p-3"
-          />
-          {errors.email && <Text color="red">{errors.email.message}</Text>}
-        </Flex>
-        <Flex direction="column" className="w-[20rem]">
-          <label htmlFor="password">Password</label>
-          <input
-            {...register("password", { required: true })}
-            type="password"
-            id="password"
-            name="password"
-            className="border rounded-md p-3"
-          />
-          {errors.password && (
-            <Text color="red">{errors.password.message}</Text>
-          )}
-        </Flex>
+        <InputField<LoginFormData>
+          id="email"
+          type="email"
+          register={register}
+          label="Email"
+          errors={errors}
+        />
+        <InputField<LoginFormData>
+          id="password"
+          type="password"
+          register={register}
+          label="Password"
+          errors={errors}
+        />
 
         <Button type="submit" size="3" disabled={isSubmitting}>
           Login

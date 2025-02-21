@@ -3,7 +3,7 @@
 import { Skeleton } from "@/app/components";
 import classNames from "classnames";
 import Link from "next/link";
-import { usePathname, useRouter } from "next/navigation";
+import { usePathname } from "next/navigation";
 import React from "react";
 import { AiFillBug } from "react-icons/ai";
 import { signOut, useSession } from "next-auth/react";
@@ -78,7 +78,7 @@ const AuthStatus = () => {
         </Link>
         <Link
           className="nav-link"
-          href={`/login?callbackUrl=${encodeURIComponent(pathname)}`}
+          href={`/register?callbackUrl=${encodeURIComponent(pathname)}`}
         >
           Register
         </Link>
