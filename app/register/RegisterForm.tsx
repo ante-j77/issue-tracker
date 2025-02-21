@@ -11,7 +11,7 @@ import { signIn } from "next-auth/react";
 import Spinner from "@/app/components/Spinner";
 import { useCallback, useState } from "react";
 import axios from "axios";
-import { usePathname, useRouter, useSearchParams } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
 import InputField from "../components/InputField";
 
 type RegisterFormData = z.infer<typeof registerSchema>;
@@ -48,7 +48,7 @@ const RegisterForm = () => {
         })
         .finally(() => setSubmitting(false));
     }),
-    []
+    [router]
   );
 
   return (

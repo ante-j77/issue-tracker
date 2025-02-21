@@ -53,7 +53,7 @@ const LoginForm = () => {
         }
       });
     }),
-    []
+    [callbackUrl, router]
   );
 
   return (
