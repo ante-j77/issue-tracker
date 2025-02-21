@@ -3,10 +3,10 @@
 import { Skeleton } from "@/app/components";
 import classNames from "classnames";
 import Link from "next/link";
-import { usePathname } from "next/navigation";
+import { usePathname, useRouter } from "next/navigation";
 import React from "react";
 import { AiFillBug } from "react-icons/ai";
-import { useSession } from "next-auth/react";
+import { signOut, useSession } from "next-auth/react";
 import {
   Avatar,
   Box,
@@ -63,14 +63,26 @@ const NavLinks = () => {
 
 const AuthStatus = () => {
   const { status, data: session } = useSession();
+  const pathname = usePathname();
 
   if (status === "loading") return <Skeleton width="3rem" />;
 
   if (status === "unauthenticated")
     return (
-      <Link className="nav-link" href="/api/auth/signin">
-        Login
-      </Link>
+      <Flex gap="4">
+        <Link
+          className="nav-link"
+          href={`/login?callbackUrl=${encodeURIComponent(pathname)}`}
+        >
+          Login
+        </Link>
+        <Link
+          className="nav-link"
+          href={`/login?callbackUrl=${encodeURIComponent(pathname)}`}
+        >
+          Register
+        </Link>
+      </Flex>
     );
 
   return (
@@ -92,8 +104,8 @@ const AuthStatus = () => {
           <DropdownMenu.Label>
             <Text size="2">{session!.user!.email}</Text>
           </DropdownMenu.Label>
-          <DropdownMenu.Item>
-            <Link href="/api/auth/signout">Logout</Link>
+          <DropdownMenu.Item onSelect={() => signOut()}>
+            Logout
           </DropdownMenu.Item>
         </DropdownMenu.Content>
       </DropdownMenu.Root>

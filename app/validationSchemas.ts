@@ -15,3 +15,14 @@ export const patchIssueSchema = z.object({
     .optional()
     .nullable(),
 });
+
+export const registerSchema = z.object({
+  name: z.string().min(5, "Must contain at least 5 character(s)"),
+  email: z.string().email("Invalid email").nonempty("Field is required"),
+  password: z.string().min(5, "Must contain at least 5 character(s)"),
+});
+
+export const loginSchema = z.object({
+  email: z.string().email("Email is required"),
+  password: z.string().min(5, "Min 5 characters"),
+});
