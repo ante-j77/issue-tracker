@@ -65,7 +65,7 @@ const LoginForm = () => {
           type="button"
           size="3"
           color="purple"
-          className="w-[20rem]"
+          className="w-[320px]"
           onClick={() =>
             signIn("google", { callbackUrl }).then(() => {
               router.push(callbackUrl);
@@ -90,7 +90,7 @@ const LoginForm = () => {
           errors={errors}
         />
 
-        <Button type="submit" size="3" disabled={isSubmitting}>
+        <Button type="submit" size="3" className="px-6" disabled={isSubmitting}>
           Login
           {isSubmitting && <Spinner />}
         </Button>
