@@ -60,7 +60,7 @@ const RegisterForm = () => {
           type="button"
           size="3"
           color="purple"
-          className="w-[320px]"
+          className="!w-[320px]"
           onClick={() =>
             signIn("google", { callbackUrl }).then(() => {
               router.push(callbackUrl);
